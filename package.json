@@ -1,0 +1,10 @@
+{
+  "name": "suport",
+  "version": "0.0.1",
+  "main": "index.ts",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": "^18.2.0",
+    "@types/react": "^18.0.26"
+  }
+}
