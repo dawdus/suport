@@ -1,13 +1,5 @@
-import * as React from "react";
-import {
-  Anchor,
-  Point,
-  Size,
-  Gesture,
-  Delta,
-  Coords,
-  Geometry,
-} from "./useWheelEvent";
+import * as React from 'react';
+import { Anchor, Point, Size, Gesture, Delta, Coords, Geometry } from './useWheelEvent';
 
 export type Parent = {
   children?: JSX.Element | JSX.Element[];
@@ -46,7 +38,7 @@ export class VirtualCanvas {
     delta: Delta,
     viewport: Positionable,
     minzoom: number,
-    affect: { x: boolean; y: boolean }
+    affect: { x: boolean; y: boolean },
   ) {
     this._anchor = anchor;
     this._size = size;
@@ -58,13 +50,7 @@ export class VirtualCanvas {
     this._minzoom = minzoom;
     this._affect = affect;
   }
-  static make(
-    position: Point,
-    size: Size,
-    anchor: Anchor,
-    zoom: number,
-    affect?: { x: boolean; y: boolean }
-  ) {
+  static make(position: Point, size: Size, anchor: Anchor, zoom: number, affect?: { x: boolean; y: boolean }) {
     return new VirtualCanvas(
       position,
       size,
@@ -77,7 +63,7 @@ export class VirtualCanvas {
       { ...position, zoom: zoom - 100 },
       point(),
       100,
-      affect ?? { x: true, y: true }
+      affect ?? { x: true, y: true },
     );
   }
   public attach = (v: Positionable) => {
@@ -93,7 +79,7 @@ export class VirtualCanvas {
         ? 1 /
           Math.min(
             this.original.size.width / v.constructor.size.width,
-            this.original.size.height / v.constructor.size.height
+            this.original.size.height / v.constructor.size.height,
           )
         : this._affect.x
         ? 1 / (this.original.size.width / v.constructor.size.width)
@@ -122,7 +108,7 @@ export class VirtualCanvas {
       this._delta,
       this._viewport,
       this._minzoom,
-      this._affect
+      this._affect,
     );
   }
   get config() {
@@ -185,14 +171,10 @@ export class VirtualCanvas {
     return this._anchor;
   }
   get roomX() {
-    return (
-      this.scaleAxis.x * this.original.size.width - this.viewport.size.width
-    );
+    return this.scaleAxis.x * this.original.size.width - this.viewport.size.width;
   }
   get roomY() {
-    return (
-      this.scaleAxis.y * this.original.size.height - this.viewport.size.height
-    );
+    return this.scaleAxis.y * this.original.size.height - this.viewport.size.height;
   }
   get rect() {
     return { position: this.position, size: this.size };
@@ -202,18 +184,11 @@ export class VirtualCanvas {
   }
   public touchCoord = (client: Point) => {
     return {
-      x:
-        (client.x - this.viewport.position.x - this.position.x) /
-        this.size.width,
-      y:
-        (client.y - this.viewport.position.y - this.position.y) /
-        this.size.height,
+      x: (client.x - this.viewport.position.x - this.position.x) / this.size.width,
+      y: (client.y - this.viewport.position.y - this.position.y) / this.size.height,
     };
   };
-  public translate = (
-    { type, delta, client }: Gesture,
-    clientTouch?: boolean
-  ) => {
+  public translate = ({ type, delta, client }: Gesture, clientTouch?: boolean) => {
     let touch: Point;
     if (clientTouch) {
       touch = client;
@@ -224,9 +199,9 @@ export class VirtualCanvas {
     let nextX = this._delta.x;
     let nextY = this._delta.y;
     let nextZ = this._delta.zoom;
-    let zoomMultiplier = clientTouch ? 1 : this.zoom / 100;
-    let workableDeltaZ = delta.zoom * zoomMultiplier;
-    if (type === "zoom") {
+    const zoomMultiplier = clientTouch ? 1 : this.zoom / 100;
+    const workableDeltaZ = delta.zoom * zoomMultiplier;
+    if (type === 'zoom') {
       nextZ = nextZ - workableDeltaZ;
     } else {
       nextX = nextX - delta.x;
@@ -235,16 +210,10 @@ export class VirtualCanvas {
 
     if (nextZ + 100 > this.minzoom) {
       if (this._affect.x) {
-        nextX =
-          nextX +
-          ((this.original.size.width * workableDeltaZ) / 100) *
-            (touch.x - this.anchor[0]);
+        nextX = nextX + ((this.original.size.width * workableDeltaZ) / 100) * (touch.x - this.anchor[0]);
       }
       if (this._affect.y) {
-        nextY =
-          nextY +
-          ((this.original.size.height * workableDeltaZ) / 100) *
-            (touch.y - this.anchor[1]);
+        nextY = nextY + ((this.original.size.height * workableDeltaZ) / 100) * (touch.y - this.anchor[1]);
       }
       this._delta = {
         ...this._delta,

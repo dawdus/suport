@@ -1,7 +1,7 @@
-import * as React from "react";
-import { VirtualCanvas, Canvas, Parent } from "./virtualCanvas";
-import { useWheelEvent, Anchor } from "./useWheelEvent";
-import { useViewportSize } from "./useVieportSize";
+import * as React from 'react';
+import { VirtualCanvas, Canvas, Parent } from './virtualCanvas';
+import { useWheelEvent, Anchor } from './useWheelEvent';
+import { useViewportSize } from './useViewportSize';
 
 interface Props extends Parent {
   canvas?: Canvas & { gesture?: { x: boolean; y: boolean } };
@@ -23,10 +23,10 @@ export const Viewport = ({
   rulers,
   touch,
 }: Props) => {
-  let [target, gesture] = useWheelEvent();
-  let resize = useViewportSize();
+  const [target, gesture] = useWheelEvent();
+  const resize = useViewportSize();
   const [canvas, setCanvas] = React.useState<VirtualCanvas>(
-    VirtualCanvas.make(c.position, c.size, c.anchor, c.zoom, c.gesture)
+    VirtualCanvas.make(c.position, c.size, c.anchor, c.zoom, c.gesture),
   );
 
   React.useLayoutEffect(() => {
@@ -38,15 +38,15 @@ export const Viewport = ({
 
   React.useLayoutEffect(() => {
     if (target.current) {
-      let t = target.current;
-      let { x, y, width, height } = t.getBoundingClientRect();
+      const t = target.current;
+      const { x, y, width, height } = t.getBoundingClientRect();
       setCanvas((s) =>
         s.attach({
           position: { x, y },
           size: { width, height },
           anchor: anchor ?? [0, 0],
           constructor: { position: { x, y }, size: { width, height } },
-        })
+        }),
       );
     }
   }, [anchor, target, resize]);
@@ -58,7 +58,7 @@ export const Viewport = ({
             React.cloneElement(a, {
               canvas,
               key: `canvas-child-${i}`,
-            })
+            }),
           )
         : [
             React.cloneElement(children, {
@@ -77,19 +77,19 @@ export const Viewport = ({
         }
       }}
       style={{
-        position: "relative",
-        width: "100%",
-        height: "100%",
-        display: "flex",
-        alignItems: "center",
+        position: 'relative',
+        width: '100%',
+        height: '100%',
+        display: 'flex',
+        alignItems: 'center',
       }}
     >
       <div
         style={{
-          position: "relative",
-          width: "100%",
+          position: 'relative',
+          width: '100%',
           height: `100%`,
-          display: "flex",
+          display: 'flex',
           flexGrow: 1,
           flexShrink: 1,
         }}
@@ -98,9 +98,9 @@ export const Viewport = ({
         <div
           style={{
             flexShrink: 1,
-            position: "relative",
-            width: "100%",
-            height: "100%",
+            position: 'relative',
+            width: '100%',
+            height: '100%',
           }}
           ref={target}
         >
