@@ -35,7 +35,7 @@ export class VirtualCanvas {
   protected _delta: Delta;
   protected _viewport: Positionable;
   protected _minzoom: number;
-  protected _config = { x: true, y: true };
+  protected _affect = { x: true, y: true };
 
   private constructor(
     position: Point,
@@ -45,7 +45,8 @@ export class VirtualCanvas {
     original: Coords,
     delta: Delta,
     viewport: Positionable,
-    minzoom: number
+    minzoom: number,
+    affect: { x: boolean; y: boolean }
   ) {
     this._anchor = anchor;
     this._size = size;
@@ -55,8 +56,15 @@ export class VirtualCanvas {
     this._original = original;
     this._viewport = viewport;
     this._minzoom = minzoom;
+    this._affect = affect;
   }
-  static make(position: Point, size: Size, anchor: Anchor, zoom: number) {
+  static make(
+    position: Point,
+    size: Size,
+    anchor: Anchor,
+    zoom: number,
+    affect?: { x: boolean; y: boolean }
+  ) {
     return new VirtualCanvas(
       position,
       size,
@@ -68,14 +76,12 @@ export class VirtualCanvas {
       },
       { ...position, zoom: zoom - 100 },
       point(),
-      100
+      100,
+      affect ?? { x: true, y: true }
     );
   }
   public attach = (v: Positionable) => {
     this._viewport = v;
-    // if (this._config.x === false) {
-    //   this._original.size.width = v.size.width;
-    // }
     if (v.size.width > this._original.size.width) {
       this._original.size.width = v.size.width;
     }
@@ -83,13 +89,13 @@ export class VirtualCanvas {
       this._original.size.height = v.size.height;
     }
     this._minzoom =
-      (this._config.x && this._config.y
+      (this._affect.x && this._affect.y
         ? 1 /
           Math.min(
             this.original.size.width / v.constructor.size.width,
             this.original.size.height / v.constructor.size.height
           )
-        : this._config.x
+        : this._affect.x
         ? 1 / (this.original.size.width / v.constructor.size.width)
         : 1 / (this.original.size.height / v.constructor.size.height)) * 100;
     if (this._zoom < this._minzoom) {
@@ -115,11 +121,12 @@ export class VirtualCanvas {
       this._original,
       this._delta,
       this._viewport,
-      this._minzoom
+      this._minzoom,
+      this._affect
     );
   }
   get config() {
-    return this._config;
+    return this._affect;
   }
   get minzoom() {
     return this._minzoom;
@@ -155,8 +162,8 @@ export class VirtualCanvas {
   }
   get scaleAxis() {
     return {
-      x: this._config.x ? this._zoom / 100 : 1,
-      y: this._config.y ? this._zoom / 100 : 1,
+      x: this._affect.x ? this._zoom / 100 : 1,
+      y: this._affect.y ? this._zoom / 100 : 1,
     };
   }
   get zoom() {
@@ -227,13 +234,13 @@ export class VirtualCanvas {
     }
 
     if (nextZ + 100 > this.minzoom) {
-      if (this._config.x) {
+      if (this._affect.x) {
         nextX =
           nextX +
           ((this.original.size.width * workableDeltaZ) / 100) *
             (touch.x - this.anchor[0]);
       }
-      if (this._config.y) {
+      if (this._affect.y) {
         nextY =
           nextY +
           ((this.original.size.height * workableDeltaZ) / 100) *

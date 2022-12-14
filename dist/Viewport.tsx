@@ -4,7 +4,7 @@ import { useWheelEvent, Anchor } from "./useWheelEvent";
 import { useViewportSize } from "./useVieportSize";
 
 interface Props extends Parent {
-  canvas?: Canvas;
+  canvas?: Canvas & { gesture?: { x: boolean; y: boolean } };
   anchor?: Anchor;
   touch?: ({ x, y }: { x: number; y: number }) => void;
   rulers?: JSX.Element | JSX.Element[];
@@ -18,6 +18,7 @@ export const Viewport = ({
     size: { width: 1000, height: 1000 },
     anchor: [0, 0],
     zoom: 40,
+    gesture: { x: true, y: true },
   },
   rulers,
   touch,
@@ -25,7 +26,7 @@ export const Viewport = ({
   let [target, gesture] = useWheelEvent();
   let resize = useViewportSize();
   const [canvas, setCanvas] = React.useState<VirtualCanvas>(
-    VirtualCanvas.make(c.position, c.size, c.anchor, c.zoom)
+    VirtualCanvas.make(c.position, c.size, c.anchor, c.zoom, c.gesture)
   );
 
   React.useLayoutEffect(() => {
