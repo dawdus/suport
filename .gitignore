@@ -1,7 +1,7 @@
 .DS_Store
+.npmignore
+.prettierrc
 /node_modules
 /dev
 /lib
-.npmignore
-.prettierrc
 tslint.json

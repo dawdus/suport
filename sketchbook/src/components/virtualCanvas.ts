@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Anchor, Point, Size, Gesture, Delta, Coords, Geometry } from './useWheelEvent';
 
 export type Parent = {
-  children?: JSX.Element | JSX.Element[];
+  children?: JSX.Element;
 };
 
 export interface Canvas extends Geometry {

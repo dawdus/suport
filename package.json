@@ -1,7 +1,7 @@
 {
   "name": "suport",
   "author": "Mazowiecka Fabryka Podzespołów Programistycznych",
-  "version": "0.0.5",
+  "version": "0.0.9",
   "main": "lib/index.js",
   "license": "ISC",
   "types": "lib/index.d.ts",
@@ -20,7 +20,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "format": "prettier --write \"src/**/*.ts\"",
+    "format": "prettier --write \"sketchbook/**/*.ts\"",
     "lint": "tslint -p tsconfig.json"
   },
   "files": [

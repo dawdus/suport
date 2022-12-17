@@ -7,7 +7,8 @@ interface Props extends Parent {
   canvas?: Canvas & { gesture?: { x: boolean; y: boolean } };
   anchor?: Anchor;
   touch?: ({ x, y }: { x: number; y: number }) => void;
-  rulers?: JSX.Element | JSX.Element[];
+  rulers?: JSX.Element;
+  css?: React.CSSProperties;
 }
 
 export const Viewport = ({
@@ -17,11 +18,12 @@ export const Viewport = ({
     position: { x: 0, y: 0 },
     size: { width: 1000, height: 1000 },
     anchor: [0, 0],
-    zoom: 40,
+    zoom: 60,
     gesture: { x: true, y: true },
   },
   rulers,
   touch,
+  css,
 }: Props) => {
   const [target, gesture] = useWheelEvent();
   const resize = useViewportSize();
@@ -51,23 +53,13 @@ export const Viewport = ({
     }
   }, [anchor, target, resize]);
 
-  const list = canvas
-    ? children
-      ? Array.isArray(children)
-        ? children.map((a, i) =>
-            React.cloneElement(a, {
-              canvas,
-              key: `canvas-child-${i}`,
-            }),
-          )
-        : [
-            React.cloneElement(children, {
-              canvas,
-              key: `canvas-child`,
-            }),
-          ]
-      : []
-    : [];
+  const list =
+    canvas && children
+      ? React.cloneElement(children, {
+          canvas,
+          key: `canvas-child`,
+        })
+      : null;
 
   return (
     <div
@@ -82,19 +74,20 @@ export const Viewport = ({
         height: '100%',
         display: 'flex',
         alignItems: 'center',
+        ...css,
       }}
     >
       <div
         style={{
           position: 'relative',
           width: '100%',
-          height: `100%`,
+          height: '100%',
           display: 'flex',
           flexGrow: 1,
           flexShrink: 1,
         }}
       >
-        {rulers}
+        {rulers ? React.cloneElement(rulers, { zoom: canvas.zoom, origin: canvas.y }) : null}
         <div
           style={{
             flexShrink: 1,
